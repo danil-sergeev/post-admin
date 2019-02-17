@@ -1,10 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, bindActionCreators } from 'react-redux';
 import { compose } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
 import { Query } from 'react-apollo';
 
+
 import { FETCH_POST_REACHES } from '../queries';
+import {logout} from '../actions';
 
 import MainHeader from './MainHeader';
 import FromToDateForm from './FromToDateForm';
@@ -37,10 +39,10 @@ const styles = (theme) => ({
 	}
 });
 
-const GroupByIdPage = ({ classes }) => (
+const GroupByIdPage = ({ classes, user, logout }) => (
 	<div className={classes.grid}>
 		<div className={classes.header}>
-			<MainHeader />
+			<MainHeader logout={logout} name={user.firstName} surname={user.lastName}/>
 		</div>
 
 		<Query query={FETCH_POST_REACHES} variables={this.props.match.params.groupId}>
@@ -75,4 +77,8 @@ const mapStateToProps = (state) => {
 	};
 };
 
-export default compose(withStyles(styles), connect(mapStateToProps))(GroupByIdPage);
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+	logout
+}, dispatch)
+
+export default compose(withStyles(styles), connect(mapStateToProps, mapDispatchToProps))(GroupByIdPage);
